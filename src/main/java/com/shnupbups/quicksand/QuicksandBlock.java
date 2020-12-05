@@ -8,7 +8,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.EntityShapeContext;
-import net.minecraft.block.FallingBlock;
 import net.minecraft.block.FluidDrainable;
 import net.minecraft.block.SandBlock;
 import net.minecraft.block.ShapeContext;
@@ -16,15 +15,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.tag.EntityTypeTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -56,18 +52,19 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 	@Override
 	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
 		if (!(entity instanceof LivingEntity) || ((LivingEntity)entity).getBlockState().isOf(Quicksand.QUICKSAND)) {
-			entity.slowMovement(state, new Vec3d(0.6D, 0.7D, 0.6D));
+			entity.slowMovement(state, new Vec3d(0.6D, 0.4D, 0.6D));
 		}
 
-		if (entity instanceof LivingEntity && world.getBlockState(new BlockPos(entity.getBlockX(), entity.getEyeY() - 0.1111111119389534D, entity.getBlockZ())).isOf(Quicksand.QUICKSAND)) {
-			LivingEntity living = (LivingEntity)entity;
-			living.damage(Quicksand.QUICKSAND_DAMAGE, 1f);
-		}
+		if(world.getRandom().nextBoolean()) {
+			if (entity instanceof LivingEntity && world.getBlockState(new BlockPos(entity.getBlockX(), entity.getEyeY() - 0.1111111119389534D, entity.getBlockZ())).isOf(Quicksand.QUICKSAND)) {
+				LivingEntity living = (LivingEntity)entity;
+				living.damage(Quicksand.QUICKSAND_DAMAGE, 1f);
+			}
 
-		if (!entity.isSpectator() && (entity.lastRenderX != entity.getX() || entity.lastRenderZ != entity.getZ()) && world.random.nextBoolean()) {
-			spawnParticles(world, state, new Vec3d(entity.getX(), pos.getY(), entity.getZ()));
+			if (!entity.isSpectator() && (entity.lastRenderX != entity.getX() || entity.lastRenderZ != entity.getZ())) {
+				spawnParticles(world, state, new Vec3d(entity.getX(), pos.getY(), entity.getZ()));
+			}
 		}
-
 	}
 
 	@Override
