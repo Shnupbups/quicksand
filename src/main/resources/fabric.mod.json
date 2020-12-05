@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "quicksand",
+  "version": "1.0.0",
+
+  "name": "Quicksand",
+  "description": "Adds Quicksand. That's it.",
+  "authors": [
+    "Shnupbups"
+  ],
+
+  "license": "LGPLv3",
+  "icon": "assets/quicksand/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.shnupbups.quicksand.Quicksand"
+    ]
+  },
+  "mixins": ["quicksand.mixins.json"],
+
+  "depends": {
+    "fabricloader": ">=0.6.1",
+    "fabric": "*"
+  }
+}
