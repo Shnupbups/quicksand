@@ -29,7 +29,7 @@ public abstract class LivingEntityMixin extends Entity {
 	public void inject_26318(Vec3d vec3d, float f, CallbackInfoReturnable<Vec3d> cir) {
 		Vec3d vec3d2 = this.getVelocity();
 		if ((this.horizontalCollision || this.jumping) && (this.getBlockState().isOf(Quicksand.QUICKSAND) || this.getBlockState().isOf(Quicksand.QUICKSAND_CAULDRON))) {
-			cir.setReturnValue(new Vec3d(vec3d2.x, QuicksandBlock.canWalkOnQuicksand(this)?0.4D:0.1D, vec3d2.z));
+			cir.setReturnValue(new Vec3d(vec3d2.x, QuicksandBlock.canWalkOnQuicksand(this) ? 0.4D : 0.1D, vec3d2.z));
 		}
 	}
 

@@ -46,10 +46,10 @@ public class QuicksandCauldronBlock extends AbstractCauldronBlock {
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
 		if (context instanceof EntityShapeContext) {
-			EntityShapeContext entityShapeContext = (EntityShapeContext)context;
+			EntityShapeContext entityShapeContext = (EntityShapeContext) context;
 			Optional<Entity> optional = entityShapeContext.getEntity();
 			if (optional.isPresent()) {
-				if(optional.get() instanceof FallingBlockEntity || (QuicksandBlock.canWalkOnQuicksand(optional.get()) && context.isAbove(VoxelShapes.fullCube(), pos, false) && !context.isDescending())) {
+				if (optional.get() instanceof FallingBlockEntity || (QuicksandBlock.canWalkOnQuicksand(optional.get()) && context.isAbove(VoxelShapes.fullCube(), pos, false) && !context.isDescending())) {
 					return VoxelShapes.fullCube();
 				}
 			}

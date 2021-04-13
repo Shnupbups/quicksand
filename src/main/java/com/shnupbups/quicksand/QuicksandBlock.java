@@ -15,6 +15,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.particle.BlockStateParticleEffect;
@@ -51,13 +52,13 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 
 	@Override
 	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-		if (!(entity instanceof LivingEntity) || ((LivingEntity)entity).getBlockState().isOf(Quicksand.QUICKSAND)) {
+		if (!(entity instanceof LivingEntity) || ((LivingEntity) entity).getBlockState().isOf(Quicksand.QUICKSAND)) {
 			entity.slowMovement(state, new Vec3d(0.6D, 0.4D, 0.6D));
 		}
 
-		if(world.getRandom().nextBoolean()) {
+		if (world.getRandom().nextBoolean()) {
 			if (entity instanceof LivingEntity && world.getBlockState(new BlockPos(entity.getBlockX(), entity.getEyeY() - 0.1111111119389534D, entity.getBlockZ())).isOf(Quicksand.QUICKSAND)) {
-				LivingEntity living = (LivingEntity)entity;
+				LivingEntity living = (LivingEntity) entity;
 				living.damage(Quicksand.QUICKSAND_DAMAGE, 1f);
 			}
 
@@ -70,10 +71,10 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
 		if (context instanceof EntityShapeContext) {
-			EntityShapeContext entityShapeContext = (EntityShapeContext)context;
+			EntityShapeContext entityShapeContext = (EntityShapeContext) context;
 			Optional<Entity> optional = entityShapeContext.getEntity();
 			if (optional.isPresent()) {
-				if(optional.get() instanceof FallingBlockEntity || (canWalkOnQuicksand(optional.get()) && context.isAbove(VoxelShapes.fullCube(), pos, false) && !context.isDescending())) {
+				if (optional.get() instanceof FallingBlockEntity || (canWalkOnQuicksand(optional.get()) && context.isAbove(VoxelShapes.fullCube(), pos, false) && !context.isDescending())) {
 					return super.getCollisionShape(state, world, pos, context);
 				}
 			}
@@ -92,7 +93,7 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 			Random random = world.getRandom();
 			double d = pos.y + 1.0D;
 
-			for(int i = 0; i < random.nextInt(3); ++i) {
+			for (int i = 0; i < random.nextInt(3); ++i) {
 				world.addParticle(new BlockStateParticleEffect(ParticleTypes.FALLING_DUST, state), pos.x, d, pos.z, (-1.0F + random.nextFloat() * 2.0F) / 12.0F, 0.05000000074505806D, (-1.0F + random.nextFloat() * 2.0F) / 12.0F);
 			}
 		}
@@ -124,5 +125,10 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 	@Override
 	protected void configureFallingBlockEntity(FallingBlockEntity entity) {
 		entity.dropItem = false;
+	}
+
+	@Override
+	public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
+		return true;
 	}
 }

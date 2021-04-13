@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tag.TagRegistry;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
@@ -36,7 +37,7 @@ public class Quicksand implements ModInitializer {
 	public static final BlockItem QUICKSAND_BUCKET = new PowderSnowBucketItem(QUICKSAND, SoundEvents.BLOCK_SAND_PLACE, new FabricItemSettings().maxCount(1).group(ItemGroup.MISC));
 	public static final Block QUICKSAND_CAULDRON = new QuicksandCauldronBlock(FabricBlockSettings.copyOf(Blocks.CAULDRON));
 
-	public static final DamageSource QUICKSAND_DAMAGE = new DamageSource("quicksand"){
+	public static final DamageSource QUICKSAND_DAMAGE = new DamageSource("quicksand") {
 		@Override
 		public boolean bypassesArmor() {
 			return true;
@@ -60,7 +61,7 @@ public class Quicksand implements ModInitializer {
 			biomeModificationContext.getGenerationSettings().addFeature(GenerationStep.Feature.LAKES, QUICKSAND_LAKE_FEATURE_KEY);
 		});
 	}
-	
+
 	public static Identifier id(String id) {
 		return new Identifier(MOD_ID, id);
 	}
