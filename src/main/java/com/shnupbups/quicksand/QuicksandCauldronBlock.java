@@ -22,6 +22,11 @@ public class QuicksandCauldronBlock extends AbstractCauldronBlock {
 	}
 
 	@Override
+	public boolean isFull(BlockState state) {
+		return true;
+	}
+
+	@Override
 	protected double getFluidHeight(BlockState state) {
 		return 0.9375D;
 	}

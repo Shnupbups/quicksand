@@ -41,7 +41,7 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 	@Override
 	@Environment(EnvType.CLIENT)
 	public boolean isSideInvisible(BlockState state, BlockState stateFrom, Direction direction) {
-		return stateFrom.isOf(this) ? true : super.isSideInvisible(state, stateFrom, direction);
+		return stateFrom.isOf(this) || super.isSideInvisible(state, stateFrom, direction);
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 	}
 
 	@Override
-	public VoxelShape getVisualShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+	public VoxelShape getCameraCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
 		return VoxelShapes.empty();
 	}
 
@@ -117,7 +117,7 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 	}
 
 	@Override
-	public Optional<SoundEvent> getDrainSound() {
+	public Optional<SoundEvent> getBucketFillSound() {
 		return Optional.of(SoundEvents.BLOCK_SAND_BREAK);
 	}
 

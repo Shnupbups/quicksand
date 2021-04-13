@@ -1,21 +1,14 @@
 package com.shnupbups.quicksand;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tag.TagRegistry;
-import net.fabricmc.fabric.impl.biome.modification.BiomeModificationContextImpl;
-import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.LavaCauldronBlock;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -28,15 +21,10 @@ import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.BiomeKeys;
-import net.minecraft.world.biome.BuiltinBiomes;
 import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.decorator.ChanceDecoratorConfig;
-import net.minecraft.world.gen.decorator.Decorator;
-import net.minecraft.world.gen.decorator.WaterLakeDecorator;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredFeatures;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.LakeFeature;
 import net.minecraft.world.gen.feature.SingleStateFeatureConfig;
 
 public class Quicksand implements ModInitializer {
@@ -56,8 +44,7 @@ public class Quicksand implements ModInitializer {
 	};
 
 	public static final RegistryKey<ConfiguredFeature<?, ?>> QUICKSAND_LAKE_FEATURE_KEY = RegistryKey.of(BuiltinRegistries.CONFIGURED_FEATURE.getKey(), id("quicksand_lake"));
-	public static final Decorator<ChanceDecoratorConfig> QUICKSAND_LAKE_DECORATOR = new WaterLakeDecorator(ChanceDecoratorConfig.CODEC);
-	public static final ConfiguredFeature<?, ?> QUICKSAND_LAKE_CONFIGURED_FEATURE = Feature.LAKE.configure(new SingleStateFeatureConfig(QUICKSAND.getDefaultState())).decorate(QUICKSAND_LAKE_DECORATOR.configure(new ChanceDecoratorConfig(4)));
+	public static final ConfiguredFeature<?, ?> QUICKSAND_LAKE_CONFIGURED_FEATURE = Feature.LAKE.configure(new SingleStateFeatureConfig(QUICKSAND.getDefaultState())).range(ConfiguredFeatures.Decorators.BOTTOM_TO_TOP).spreadHorizontally().applyChance(4);
 
 	@Override
 	public void onInitialize() {
@@ -69,7 +56,6 @@ public class Quicksand implements ModInitializer {
 
 		BuiltinRegistries.add(BuiltinRegistries.CONFIGURED_FEATURE, Quicksand.id("quicksand_lake"), QUICKSAND_LAKE_CONFIGURED_FEATURE);
 
-		Registry.register(Registry.DECORATOR, Quicksand.id("quicksand_lake"), QUICKSAND_LAKE_DECORATOR);
 		BiomeModifications.create(id("quicksand")).add(ModificationPhase.ADDITIONS, (biomeSelectionContext) -> biomeSelectionContext.getBiomeKey().equals(BiomeKeys.DESERT), (biomeSelectionContext, biomeModificationContext) -> {
 			biomeModificationContext.getGenerationSettings().addFeature(GenerationStep.Feature.LAKES, QUICKSAND_LAKE_FEATURE_KEY);
 		});
