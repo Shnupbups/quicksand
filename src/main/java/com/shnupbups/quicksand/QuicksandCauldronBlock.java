@@ -1,10 +1,6 @@
 package com.shnupbups.quicksand;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.AbstractCauldronBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.EntityShapeContext;
-import net.minecraft.block.ShapeContext;
+import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.util.math.BlockPos;
@@ -45,8 +41,7 @@ public class QuicksandCauldronBlock extends AbstractCauldronBlock {
 
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		if (context instanceof EntityShapeContext) {
-			EntityShapeContext entityShapeContext = (EntityShapeContext) context;
+		if (context instanceof EntityShapeContext entityShapeContext) {
 			Optional<Entity> optional = entityShapeContext.getEntity();
 			if (optional.isPresent()) {
 				if (optional.get() instanceof FallingBlockEntity || (QuicksandBlock.canWalkOnQuicksand(optional.get()) && context.isAbove(VoxelShapes.fullCube(), pos, false) && !context.isDescending())) {

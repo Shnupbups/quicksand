@@ -6,7 +6,6 @@ import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tag.TagRegistry;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
@@ -23,10 +22,12 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.YOffset;
+import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.ConfiguredFeatures;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.SingleStateFeatureConfig;
+import net.minecraft.world.gen.heightprovider.UniformHeightProvider;
 
 public class Quicksand implements ModInitializer {
 	public static final String MOD_ID = "quicksand";
@@ -45,7 +46,10 @@ public class Quicksand implements ModInitializer {
 	};
 
 	public static final RegistryKey<ConfiguredFeature<?, ?>> QUICKSAND_LAKE_FEATURE_KEY = RegistryKey.of(BuiltinRegistries.CONFIGURED_FEATURE.getKey(), id("quicksand_lake"));
-	public static final ConfiguredFeature<?, ?> QUICKSAND_LAKE_CONFIGURED_FEATURE = Feature.LAKE.configure(new SingleStateFeatureConfig(QUICKSAND.getDefaultState())).range(ConfiguredFeatures.Decorators.BOTTOM_TO_TOP).spreadHorizontally().applyChance(4);
+	public static final ConfiguredFeature<?, ?> QUICKSAND_LAKE_CONFIGURED_FEATURE
+			= Feature.LAKE.configure(new SingleStateFeatureConfig(QUICKSAND.getDefaultState()))
+			.range(new RangeDecoratorConfig(UniformHeightProvider.create(YOffset.getBottom(), YOffset.getTop())))
+			.spreadHorizontally().applyChance(4);
 
 	@Override
 	public void onInitialize() {
