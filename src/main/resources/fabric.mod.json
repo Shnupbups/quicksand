@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "quicksand",
-  "version": "1.0.0",
+  "version": "$version",
 
   "name": "Quicksand",
   "description": "Adds Quicksand. That's it.",
