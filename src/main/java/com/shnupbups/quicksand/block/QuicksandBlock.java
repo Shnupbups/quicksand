@@ -1,5 +1,7 @@
-package com.shnupbups.quicksand;
+package com.shnupbups.quicksand.block;
 
+import com.shnupbups.quicksand.Quicksand;
+import com.shnupbups.quicksand.registry.ModBlocksAndItems;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -52,13 +54,12 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 
 	@Override
 	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-		if (!(entity instanceof LivingEntity) || ((LivingEntity) entity).getBlockState().isOf(Quicksand.QUICKSAND)) {
+		if (entity.getBlockStateAtPos().isOf(ModBlocksAndItems.QUICKSAND)) {
 			entity.slowMovement(state, new Vec3d(0.6D, 0.4D, 0.6D));
 		}
 
 		if (world.getRandom().nextBoolean()) {
-			if (entity instanceof LivingEntity && world.getBlockState(new BlockPos(entity.getBlockX(), entity.getEyeY() - 0.1111111119389534D, entity.getBlockZ())).isOf(Quicksand.QUICKSAND)) {
-				LivingEntity living = (LivingEntity) entity;
+			if (entity instanceof LivingEntity living && world.getBlockState(new BlockPos(entity.getBlockX(), entity.getEyeY() - 0.1111111119389534D, entity.getBlockZ())).isOf(ModBlocksAndItems.QUICKSAND)) {
 				living.damage(Quicksand.QUICKSAND_DAMAGE, 1f);
 			}
 
@@ -114,7 +115,7 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 			world.syncWorldEvent(2001, pos, Block.getRawIdFromState(state));
 		}
 
-		return new ItemStack(Quicksand.QUICKSAND_BUCKET);
+		return new ItemStack(ModBlocksAndItems.QUICKSAND_BUCKET);
 	}
 
 	@Override

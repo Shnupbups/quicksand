@@ -1,5 +1,6 @@
-package com.shnupbups.quicksand;
+package com.shnupbups.quicksand.block;
 
+import com.shnupbups.quicksand.registry.ModCauldronBehavior;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.AbstractCauldronBlock;
 import net.minecraft.block.BlockState;
@@ -33,28 +34,6 @@ public class QuicksandCauldronBlock extends AbstractCauldronBlock {
 
 	@Override
 	public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
-		return 1;
-	}
-
-	@Override
-	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-		if (this.isEntityTouchingFluid(state, pos, entity)) {
-			entity.slowMovement(state, new Vec3d(0.6D, 0.4D, 0.6D));
-		}
-	}
-
-	@Override
-	public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		if (context instanceof EntityShapeContext) {
-			EntityShapeContext entityShapeContext = (EntityShapeContext) context;
-			Optional<Entity> optional = entityShapeContext.getEntity();
-			if (optional.isPresent()) {
-				if (optional.get() instanceof FallingBlockEntity || (QuicksandBlock.canWalkOnQuicksand(optional.get()) && context.isAbove(VoxelShapes.fullCube(), pos, false) && !context.isDescending())) {
-					return VoxelShapes.fullCube();
-				}
-			}
-		}
-
-		return super.getCollisionShape(state, world, pos, context);
+		return 3;
 	}
 }
