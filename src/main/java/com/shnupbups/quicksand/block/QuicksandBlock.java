@@ -1,9 +1,7 @@
 package com.shnupbups.quicksand.block;
 
-import com.shnupbups.quicksand.Quicksand;
-import com.shnupbups.quicksand.registry.ModBlocksAndItems;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import java.util.Optional;
+import java.util.Random;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -33,8 +31,11 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
-import java.util.Optional;
-import java.util.Random;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+import com.shnupbups.quicksand.Quicksand;
+import com.shnupbups.quicksand.registry.ModBlocks;
 
 public class QuicksandBlock extends SandBlock implements FluidDrainable {
 	public QuicksandBlock(AbstractBlock.Settings settings) {
@@ -54,12 +55,12 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 
 	@Override
 	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-		if (entity.getBlockStateAtPos().isOf(ModBlocksAndItems.QUICKSAND)) {
+		if (entity.getBlockStateAtPos().isOf(ModBlocks.QUICKSAND)) {
 			entity.slowMovement(state, new Vec3d(0.6D, 0.4D, 0.6D));
 		}
 
 		if (world.getRandom().nextBoolean()) {
-			if (entity instanceof LivingEntity living && world.getBlockState(new BlockPos(entity.getBlockX(), entity.getEyeY() - 0.1111111119389534D, entity.getBlockZ())).isOf(ModBlocksAndItems.QUICKSAND)) {
+			if (entity instanceof LivingEntity living && world.getBlockState(new BlockPos(entity.getBlockX(), entity.getEyeY() - 0.1111111119389534D, entity.getBlockZ())).isOf(ModBlocks.QUICKSAND)) {
 				living.damage(Quicksand.QUICKSAND_DAMAGE, 1f);
 			}
 
@@ -71,11 +72,10 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		if (context instanceof EntityShapeContext) {
-			EntityShapeContext entityShapeContext = (EntityShapeContext) context;
-			Optional<Entity> optional = entityShapeContext.getEntity();
-			if (optional.isPresent()) {
-				if (optional.get() instanceof FallingBlockEntity || (canWalkOnQuicksand(optional.get()) && context.isAbove(VoxelShapes.fullCube(), pos, false) && !context.isDescending())) {
+		if (context instanceof EntityShapeContext entityShapeContext) {
+			Entity entity = entityShapeContext.getEntity();
+			if (entity != null) {
+				if (entity instanceof FallingBlockEntity || (canWalkOnQuicksand(entity) && context.isAbove(VoxelShapes.fullCube(), pos, false) && !context.isDescending())) {
 					return super.getCollisionShape(state, world, pos, context);
 				}
 			}
@@ -104,7 +104,7 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 		if (entity.getType().isIn(Quicksand.QUICKSAND_WALKABLE_MOBS)) {
 			return true;
 		} else {
-			return entity instanceof LivingEntity && ((LivingEntity) entity).getEquippedStack(EquipmentSlot.FEET).isOf(Items.LEATHER_BOOTS);
+			return entity instanceof LivingEntity livingEntity && livingEntity.getEquippedStack(EquipmentSlot.FEET).isOf(Items.LEATHER_BOOTS);
 		}
 	}
 
@@ -115,7 +115,7 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 			world.syncWorldEvent(2001, pos, Block.getRawIdFromState(state));
 		}
 
-		return new ItemStack(ModBlocksAndItems.QUICKSAND_BUCKET);
+		return new ItemStack(ModBlocks.QUICKSAND_BUCKET);
 	}
 
 	@Override

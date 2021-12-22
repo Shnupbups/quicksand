@@ -1,10 +1,5 @@
 package com.shnupbups.quicksand.registry;
 
-import com.shnupbups.quicksand.Quicksand;
-import com.shnupbups.quicksand.block.QuicksandBlock;
-import com.shnupbups.quicksand.block.QuicksandCauldronBlock;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.BlockItem;
@@ -14,10 +9,17 @@ import net.minecraft.item.PowderSnowBucketItem;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.registry.Registry;
 
-public class ModBlocksAndItems {
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+
+import com.shnupbups.cauldronlib.block.FullCauldronBlock;
+import com.shnupbups.quicksand.Quicksand;
+import com.shnupbups.quicksand.block.QuicksandBlock;
+
+public class ModBlocks {
 	public static final Block QUICKSAND = new QuicksandBlock(FabricBlockSettings.copyOf(Blocks.SAND));
 	public static final BlockItem QUICKSAND_BUCKET = new PowderSnowBucketItem(QUICKSAND, SoundEvents.BLOCK_SAND_PLACE, new FabricItemSettings().maxCount(1).group(ItemGroup.MISC));
-	public static final Block QUICKSAND_CAULDRON = new QuicksandCauldronBlock(FabricBlockSettings.copyOf(Blocks.CAULDRON));
+	public static final Block QUICKSAND_CAULDRON = new FullCauldronBlock(FabricBlockSettings.copyOf(Blocks.CAULDRON), ModCauldronBehavior.QUICKSAND_CAULDRON_BEHAVIOR);
 
 	public static void init() {
 		Registry.register(Registry.BLOCK, Quicksand.id("quicksand"), QUICKSAND);
