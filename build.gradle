@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.10-SNAPSHOT'
+	id 'fabric-loom' version '0.11-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -9,9 +9,6 @@ targetCompatibility = JavaVersion.VERSION_17
 archivesBaseName = project.mod_name
 version = project.mod_version + "+" + project.version_meta
 group = project.maven_group
-
-minecraft {
-}
 
 repositories {
 	maven { url "https://maven.terraformersmc.com/"}
@@ -32,8 +29,8 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fapi_version}"
 	
 	// CauldronLib
-	modImplementation "com.shnupbups:CauldronLib:${project.cauldronlib_version}+${project.version_meta}"
-	include "com.shnupbups:CauldronLib:${project.cauldronlib_version}+${project.version_meta}"
+	modImplementation "com.shnupbups:CauldronLib:${project.cauldronlib_version}"
+	include "com.shnupbups:CauldronLib:${project.cauldronlib_version}"
 	
 	// ModMenu
     modRuntimeOnly "com.terraformersmc:modmenu:${project.modmenu_version}"

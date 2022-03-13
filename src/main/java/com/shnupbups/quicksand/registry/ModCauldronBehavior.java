@@ -11,10 +11,13 @@ import com.shnupbups.cauldronlib.CauldronLib;
 
 public interface ModCauldronBehavior extends CauldronBehavior {
 	Map<Item, CauldronBehavior> QUICKSAND_CAULDRON_BEHAVIOR = CauldronBehavior.createMap();
+	Map<Item, CauldronBehavior> RED_QUICKSAND_CAULDRON_BEHAVIOR = CauldronBehavior.createMap();
 
 	static void init() {
 		CauldronLib.registerFillFromBucketBehavior(ModBlocks.QUICKSAND_BUCKET, ModBlocks.QUICKSAND_CAULDRON, SoundEvents.BLOCK_SAND_PLACE);
+		CauldronLib.registerFillFromBucketBehavior(ModBlocks.RED_QUICKSAND_BUCKET, ModBlocks.RED_QUICKSAND_CAULDRON, SoundEvents.BLOCK_SAND_PLACE);
 
 		QUICKSAND_CAULDRON_BEHAVIOR.put(Items.BUCKET, CauldronLib.createEmptyBehavior(ModBlocks.QUICKSAND_BUCKET, SoundEvents.BLOCK_SAND_BREAK));
+		RED_QUICKSAND_CAULDRON_BEHAVIOR.put(Items.BUCKET, CauldronLib.createEmptyBehavior(ModBlocks.RED_QUICKSAND_BUCKET, SoundEvents.BLOCK_SAND_BREAK));
 	}
 }

@@ -1,21 +1,19 @@
 package com.shnupbups.quicksand.registry;
 
-import net.minecraft.block.Blocks;
+import net.minecraft.tag.BiomeTags;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.decorator.BiomePlacementModifier;
-import net.minecraft.world.gen.decorator.RarityFilterPlacementModifier;
-import net.minecraft.world.gen.decorator.SquarePlacementModifier;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredFeatures;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.LakeFeature;
 import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.feature.PlacedFeatures;
+import net.minecraft.world.gen.placementmodifier.BiomePlacementModifier;
+import net.minecraft.world.gen.placementmodifier.RarityFilterPlacementModifier;
+import net.minecraft.world.gen.placementmodifier.SquarePlacementModifier;
 import net.minecraft.world.gen.stateprovider.BlockStateProvider;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -25,16 +23,23 @@ import com.shnupbups.quicksand.Quicksand;
 
 public class ModFeatures extends ConfiguredFeatures {
 	public static final Identifier QUICKSAND_LAKE_ID = Quicksand.id("quicksand_lake");
-	public static final ConfiguredFeature<?, ?> QUICKSAND_LAKE_CONFIGURED_FEATURE = Feature.LAKE.configure(new LakeFeature.Config(BlockStateProvider.of(ModBlocks.QUICKSAND), BlockStateProvider.of(Blocks.SAND)));
-	public static final PlacedFeature QUICKSAND_LAKE_PLACED_FEATURE = QUICKSAND_LAKE_CONFIGURED_FEATURE.withPlacement(RarityFilterPlacementModifier.of(30), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, BiomePlacementModifier.of());
+	public static final Identifier RED_QUICKSAND_LAKE_ID = Quicksand.id("red_quicksand_lake");
+
+	public static final RegistryEntry<ConfiguredFeature<LakeFeature.Config, ?>> QUICKSAND_LAKE_CONFIGURED_FEATURE = ConfiguredFeatures.register(QUICKSAND_LAKE_ID.toString(), Feature.LAKE, new LakeFeature.Config(BlockStateProvider.of(ModBlocks.QUICKSAND.getDefaultState()), BlockStateProvider.of(ModBlocks.QUICKSAND.getDefaultState())));
+	public static final RegistryEntry<PlacedFeature> QUICKSAND_LAKE_PLACED_FEATURE = PlacedFeatures.register(QUICKSAND_LAKE_ID.toString(), QUICKSAND_LAKE_CONFIGURED_FEATURE, RarityFilterPlacementModifier.of(30), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, BiomePlacementModifier.of());
+
+	public static final RegistryEntry<ConfiguredFeature<LakeFeature.Config, ?>> RED_QUICKSAND_LAKE_CONFIGURED_FEATURE = ConfiguredFeatures.register(RED_QUICKSAND_LAKE_ID.toString(), Feature.LAKE, new LakeFeature.Config(BlockStateProvider.of(ModBlocks.RED_QUICKSAND.getDefaultState()), BlockStateProvider.of(ModBlocks.RED_QUICKSAND.getDefaultState())));
+	public static final RegistryEntry<PlacedFeature> RED_QUICKSAND_LAKE_PLACED_FEATURE = PlacedFeatures.register(RED_QUICKSAND_LAKE_ID.toString(), RED_QUICKSAND_LAKE_CONFIGURED_FEATURE, RarityFilterPlacementModifier.of(50), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, BiomePlacementModifier.of());
 
 	public static void init() {
-		BuiltinRegistries.add(BuiltinRegistries.CONFIGURED_FEATURE, QUICKSAND_LAKE_ID, QUICKSAND_LAKE_CONFIGURED_FEATURE);
-		BuiltinRegistries.add(BuiltinRegistries.PLACED_FEATURE, QUICKSAND_LAKE_ID, QUICKSAND_LAKE_PLACED_FEATURE);
-
 		BiomeModifications.create(QUICKSAND_LAKE_ID).add(ModificationPhase.ADDITIONS, (biomeSelectionContext) ->
 				biomeSelectionContext.getBiomeKey().equals(BiomeKeys.DESERT), (biomeSelectionContext, biomeModificationContext) ->
-				biomeModificationContext.getGenerationSettings().addBuiltInFeature(GenerationStep.Feature.LAKES, QUICKSAND_LAKE_PLACED_FEATURE)
+				biomeModificationContext.getGenerationSettings().addBuiltInFeature(GenerationStep.Feature.LAKES, QUICKSAND_LAKE_PLACED_FEATURE.value())
+		);
+
+		BiomeModifications.create(RED_QUICKSAND_LAKE_ID).add(ModificationPhase.ADDITIONS, (biomeSelectionContext) ->
+				biomeSelectionContext.getBiomeRegistryEntry().isIn(BiomeTags.IS_BADLANDS), (biomeSelectionContext, biomeModificationContext) ->
+				biomeModificationContext.getGenerationSettings().addBuiltInFeature(GenerationStep.Feature.LAKES, RED_QUICKSAND_LAKE_PLACED_FEATURE.value())
 		);
 	}
 }
