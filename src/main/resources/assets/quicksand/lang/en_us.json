@@ -5,5 +5,6 @@
   "block.quicksand.red_quicksand": "Red Quicksand",
   "item.quicksand.red_quicksand_bucket": "Red Quicksand Bucket",
   "block.quicksand.red_quicksand_cauldron": "Red Quicksand Cauldron",
-  "death.attack.quicksand": "%s drowned in quicksand"
+  "death.attack.quicksand": "%s drowned in quicksand",
+  "subtitles.entity.zombie.converted_to_husk": "Zombie converts to Husk"
 }

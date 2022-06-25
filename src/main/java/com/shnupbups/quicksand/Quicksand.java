@@ -8,6 +8,7 @@ import net.fabricmc.api.ModInitializer;
 import com.shnupbups.quicksand.registry.ModBlocks;
 import com.shnupbups.quicksand.registry.ModCauldronBehavior;
 import com.shnupbups.quicksand.registry.ModFeatures;
+import com.shnupbups.quicksand.registry.ModSoundEvents;
 import com.shnupbups.quicksand.registry.ModTags;
 
 public class Quicksand implements ModInitializer {
@@ -25,6 +26,7 @@ public class Quicksand implements ModInitializer {
 		ModCauldronBehavior.init();
 		ModFeatures.init();
 		ModTags.init();
+		ModSoundEvents.init();
 	}
 
 	public static Identifier id(String id) {

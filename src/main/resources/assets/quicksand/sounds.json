@@ -1,0 +1,10 @@
+{
+  "entity.zombie.converted_to_husk": {
+    "sounds": [
+      "mob/husk/idle1",
+      "mob/husk/idle2",
+      "mob/husk/idle3"
+    ],
+    "subtitle": "subtitles.entity.zombie.converted_to_husk"
+  }
+}

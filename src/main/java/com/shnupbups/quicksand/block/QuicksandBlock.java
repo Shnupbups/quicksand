@@ -1,7 +1,6 @@
 package com.shnupbups.quicksand.block;
 
 import java.util.Optional;
-import java.util.Random;
 import java.util.function.Supplier;
 
 import net.minecraft.block.AbstractBlock;
@@ -26,7 +25,9 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -38,10 +39,11 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 import com.shnupbups.quicksand.Quicksand;
-import com.shnupbups.quicksand.registry.ModBlocks;
 import com.shnupbups.quicksand.registry.ModTags;
 
 public class QuicksandBlock extends SandBlock implements FluidDrainable {
+	private static final VoxelShape FALLING_SHAPE = VoxelShapes.cuboid(0.0, 0.0, 0.0, 1.0, 0.9f, 1.0);
+
 	public final Supplier<Item> bucket;
 
 	public QuicksandBlock(AbstractBlock.Settings settings, int color, Supplier<Item> bucket) {
@@ -67,7 +69,7 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 		}
 
 		if (!entity.isSpectator() && (hasEntityMoved(entity) || world.getRandom().nextFloat() < 0.2)) {
-			if (entity instanceof LivingEntity living && world.getBlockState(new BlockPos(entity.getBlockX(), entity.getEyeY() - 0.1111111119389534D, entity.getBlockZ())).isIn(ModTags.QUICKSAND)) {
+			if (!entity.getType().isIn(ModTags.SURVIVES_IN_QUICKSAND) && entity instanceof LivingEntity living && world.getBlockState(new BlockPos(entity.getBlockX(), entity.getEyeY() - 0.11, entity.getBlockZ())).isIn(ModTags.QUICKSAND)) {
 				living.damage(Quicksand.QUICKSAND_DAMAGE, 1f);
 			}
 
@@ -86,7 +88,9 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 			Entity entity = entityShapeContext.getEntity();
 			if (entity != null) {
 				if (entity instanceof FallingBlockEntity || (canWalkOnQuicksand(entity) && context.isAbove(VoxelShapes.fullCube(), pos, false) && !context.isDescending())) {
-					return VoxelShapes.fullCube();
+					return super.getCollisionShape(state, world, pos, context);
+				} else if (entity.fallDistance > 2.5f) {
+					return FALLING_SHAPE;
 				}
 			}
 		}
@@ -104,7 +108,7 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 			Random random = world.getRandom();
 
 			for (int i = 0; i < random.nextInt(3); ++i) {
-				world.addParticle(new BlockStateParticleEffect(ParticleTypes.FALLING_DUST, state), pos.x+(random.nextFloat(0.2f)-0.1f), pos.y+(random.nextFloat(0.2f)-0.1f), pos.z+(random.nextFloat(0.2f)-0.1f), (-1.0F + random.nextFloat() * 2.0F) / 12.0F, 0.05000000074505806D, (-1.0F + random.nextFloat() * 2.0F) / 12.0F);
+				world.addParticle(new BlockStateParticleEffect(ParticleTypes.FALLING_DUST, state), pos.x+(MathHelper.nextBetween(random, -1.0f, 1.0f)), pos.y+(MathHelper.nextBetween(random, -1.0f, 1.0f)), pos.z+(MathHelper.nextBetween(random, -1.0f, 1.0f)), (-1.0F + random.nextFloat() * 2.0F) / 12.0F, 0.05, (-1.0F + random.nextFloat() * 2.0F) / 12.0F);
 			}
 		}
 	}

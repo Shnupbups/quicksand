@@ -3,8 +3,14 @@
   "minVersion": "0.8",
   "package": "com.shnupbups.quicksand.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins": ["EntityMixin", "LivingEntityMixin"],
+  "mixins": [
+    "EntityMixin",
+    "HuskEntityMixin",
+    "LivingEntityMixin",
+    "ZombieEntityMixin"
+  ],
   "client": [
+    "client.ZombieBaseEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
