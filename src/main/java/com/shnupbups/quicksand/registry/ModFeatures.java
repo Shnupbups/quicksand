@@ -1,9 +1,7 @@
 package com.shnupbups.quicksand.registry;
 
-import net.minecraft.tag.BiomeTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredFeatures;
@@ -18,10 +16,11 @@ import net.minecraft.world.gen.stateprovider.BlockStateProvider;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 
 import com.shnupbups.quicksand.Quicksand;
 
-public class ModFeatures extends ConfiguredFeatures {
+public class ModFeatures {
 	public static final Identifier QUICKSAND_LAKE_ID = Quicksand.id("quicksand_lake");
 	public static final Identifier RED_QUICKSAND_LAKE_ID = Quicksand.id("red_quicksand_lake");
 
@@ -33,12 +32,12 @@ public class ModFeatures extends ConfiguredFeatures {
 
 	public static void init() {
 		BiomeModifications.create(QUICKSAND_LAKE_ID).add(ModificationPhase.ADDITIONS, (biomeSelectionContext) ->
-				biomeSelectionContext.getBiomeKey().equals(BiomeKeys.DESERT), (biomeSelectionContext, biomeModificationContext) ->
+				biomeSelectionContext.hasTag(ConventionalBiomeTags.DESERT), (biomeSelectionContext, biomeModificationContext) ->
 				biomeModificationContext.getGenerationSettings().addBuiltInFeature(GenerationStep.Feature.LAKES, QUICKSAND_LAKE_PLACED_FEATURE.value())
 		);
 
 		BiomeModifications.create(RED_QUICKSAND_LAKE_ID).add(ModificationPhase.ADDITIONS, (biomeSelectionContext) ->
-				biomeSelectionContext.getBiomeRegistryEntry().isIn(BiomeTags.IS_BADLANDS), (biomeSelectionContext, biomeModificationContext) ->
+				biomeSelectionContext.hasTag(ConventionalBiomeTags.BADLANDS), (biomeSelectionContext, biomeModificationContext) ->
 				biomeModificationContext.getGenerationSettings().addBuiltInFeature(GenerationStep.Feature.LAKES, RED_QUICKSAND_LAKE_PLACED_FEATURE.value())
 		);
 	}

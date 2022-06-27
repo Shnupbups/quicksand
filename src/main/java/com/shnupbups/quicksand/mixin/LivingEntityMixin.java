@@ -29,7 +29,7 @@ public abstract class LivingEntityMixin extends Entity {
 	@Inject(method = "applyMovementInput(Lnet/minecraft/util/math/Vec3d;F)Lnet/minecraft/util/math/Vec3d;", at = @At("RETURN"), cancellable = true)
 	public void inject_applyMovementInput(Vec3d movementInput, float f, CallbackInfoReturnable<Vec3d> cir) {
 		Vec3d velocity = this.getVelocity();
-		if ((this.horizontalCollision || this.jumping) && (this.getBlockStateAtPos().isIn(ModTags.QUICKSAND))) {
+		if ((this.horizontalCollision || this.jumping) && this.getBlockStateAtPos().isIn(ModTags.QUICKSAND)) {
 			cir.setReturnValue(new Vec3d(velocity.x, QuicksandBlock.canWalkOnQuicksand(this) ? 0.4D : 0.1D, velocity.z));
 		}
 	}

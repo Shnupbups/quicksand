@@ -27,6 +27,7 @@ import com.shnupbups.quicksand.util.ZombieEntityInterface;
 public abstract class ZombieEntityMixin extends HostileEntity implements ZombieEntityInterface {
 	private static final TrackedData<Boolean> CONVERTING_IN_QUICKSAND = DataTracker.registerData(ZombieEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 
+	private boolean submergedInQuicksand;
 	private int inQuicksandTime;
 	private int ticksUntilQuicksandConversion;
 
@@ -65,7 +66,12 @@ public abstract class ZombieEntityMixin extends HostileEntity implements ZombieE
 
 	@Override
 	public boolean isSubmergedInQuicksand() {
-		return this.getWorld().getBlockState(new BlockPos(this.getBlockX(), this.getEyeY() - 0.11, this.getBlockZ())).isIn(ModTags.QUICKSAND);
+		return this.submergedInQuicksand;
+	}
+
+	@Override
+	public void updateSubmergedInQuicksand() {
+		this.submergedInQuicksand = this.getWorld().getBlockState(new BlockPos(this.getBlockX(), this.getEyeY() - 0.11, this.getBlockZ())).isIn(ModTags.QUICKSAND);
 	}
 
 	@Inject(method = "writeCustomDataToNbt(Lnet/minecraft/nbt/NbtCompound;)V", at = @At("RETURN"))
@@ -84,21 +90,21 @@ public abstract class ZombieEntityMixin extends HostileEntity implements ZombieE
 
 	@Inject(method = "tick()V", at = @At("HEAD"))
 	private void injectTick(CallbackInfo ci) {
-		if (!this.world.isClient && this.isAlive() && !this.isAiDisabled()) {
+		if (!this.world.isClient && this.isAlive() && !this.isAiDisabled() && this.canConvertInQuicksand()) {
+			this.updateSubmergedInQuicksand();
+
 			if (this.isConvertingInQuicksand()) {
 				--this.ticksUntilQuicksandConversion;
 				if (this.ticksUntilQuicksandConversion < 0) {
 					this.convertInQuicksand();
 				}
-			} else if (this.canConvertInQuicksand()) {
-				if (this.isSubmergedInQuicksand()) {
-					++this.inQuicksandTime;
-					if (this.inQuicksandTime >= 600) {
-						this.setTicksUntilQuicksandConversion(300);
-					}
-				} else {
-					this.inQuicksandTime = -1;
+			} else if (this.isSubmergedInQuicksand()) {
+				++this.inQuicksandTime;
+				if (this.inQuicksandTime >= 600) {
+					this.setTicksUntilQuicksandConversion(300);
 				}
+			} else {
+				this.inQuicksandTime = -1;
 			}
 		}
 	}

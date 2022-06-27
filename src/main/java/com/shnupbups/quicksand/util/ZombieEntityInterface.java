@@ -10,4 +10,6 @@ public interface ZombieEntityInterface {
 	void convertInQuicksand();
 
 	boolean isSubmergedInQuicksand();
+
+	void updateSubmergedInQuicksand();
 }

@@ -13,7 +13,7 @@ import com.shnupbups.quicksand.registry.ModBlocks;
 import com.shnupbups.quicksand.registry.ModTags;
 
 @Mixin(Entity.class)
-public class EntityMixin {
+public abstract class EntityMixin {
 	@Redirect(method = "move(Lnet/minecraft/entity/MovementType;Lnet/minecraft/util/math/Vec3d;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isOf(Lnet/minecraft/block/Block;)Z", ordinal = 0))
 	public boolean move_redirect(BlockState state, Block block) {
 		return state.isOf(block) || state.isIn(ModTags.QUICKSAND);
