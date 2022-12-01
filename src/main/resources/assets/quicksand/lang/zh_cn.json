@@ -1,0 +1,10 @@
+{
+  "subtitles.entity.zombie.converted_to_husk":"僵尸转化为尸壳"
+  "block.quicksand.quicksand": "流沙",
+  "item.quicksand.quicksand_bucket": "流沙桶",
+  "block.quicksand.quicksand_cauldron": "装有流沙的炼药锅",
+  "block.quicksand.red_quicksand": "红流沙",
+  "item.quicksand.red_quicksand_bucket": "红流沙桶",
+  "block.quicksand.red_quicksand_cauldron": "装有红流沙的炼药锅",
+  "death.attack.quicksand": "%s被流沙淹没，不知所措"
+}
