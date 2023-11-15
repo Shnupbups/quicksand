@@ -15,7 +15,7 @@ public abstract class HuskEntityMixin extends ZombieEntity implements ZombieEnti
 	}
 
 	@Override
-	public boolean canConvertInQuicksand() {
+	public boolean quicksand_canConvertInQuicksand() {
 		return false;
 	}
 }

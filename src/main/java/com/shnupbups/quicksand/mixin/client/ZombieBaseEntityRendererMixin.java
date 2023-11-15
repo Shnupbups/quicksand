@@ -1,5 +1,6 @@
 package com.shnupbups.quicksand.mixin.client;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.client.render.entity.ZombieBaseEntityRenderer;
 import net.minecraft.client.render.entity.model.ZombieEntityModel;
 import net.minecraft.entity.mob.ZombieEntity;
@@ -13,8 +14,8 @@ import com.shnupbups.quicksand.util.ZombieEntityInterface;
 
 @Mixin(ZombieBaseEntityRenderer.class)
 public abstract class ZombieBaseEntityRendererMixin<T extends ZombieEntity, M extends ZombieEntityModel<T>> {
-	@Inject(method = "isShaking(Lnet/minecraft/entity/mob/ZombieEntity;)Z", at = @At("RETURN"), cancellable = true)
-	private void injectIsShaking(T zombie, CallbackInfoReturnable<Boolean> cir) {
-		cir.setReturnValue(cir.getReturnValueZ() || ((ZombieEntityInterface)zombie).isConvertingInQuicksand());
+	@ModifyReturnValue(method = "isShaking(Lnet/minecraft/entity/mob/ZombieEntity;)Z", at = @At("RETURN"))
+	private boolean quicksand_isShaking(boolean original, T zombie) {
+		return original || ((ZombieEntityInterface)zombie).quicksand_isConvertingInQuicksand();
 	}
 }

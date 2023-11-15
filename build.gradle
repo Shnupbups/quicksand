@@ -1,6 +1,8 @@
 plugins {
-	id 'fabric-loom' version '0.11-SNAPSHOT'
+	id 'fabric-loom' version "${loom_version}"
 	id 'maven-publish'
+	id "com.modrinth.minotaur" version "${minotaur_version}"
+	id 'net.darkhax.curseforgegradle' version "${cfgradle_version}"
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -9,6 +11,29 @@ targetCompatibility = JavaVersion.VERSION_17
 archivesBaseName = project.mod_name
 version = project.mod_version + "+" + project.version_meta
 group = project.maven_group
+
+loom {
+	runs {
+		datagenClient {
+			client()
+			name "Data Generation"
+			vmArg "-Dfabric-api.datagen"
+			vmArg "-Dfabric-api.datagen.output-dir=${file("src/generated/resources")}"
+
+			ideConfigGenerated = true
+			runDir "build/datagen"
+			source sourceSets.main
+		}
+	}
+}
+
+sourceSets {
+	main {
+		resources {
+			srcDir "src/generated/resources"
+		}
+	}
+}
 
 repositories {
 	maven { url "https://maven.terraformersmc.com/"}
@@ -32,11 +57,17 @@ dependencies {
 	modImplementation "com.shnupbups:CauldronLib:${project.cauldronlib_version}"
 	include "com.shnupbups:CauldronLib:${project.cauldronlib_version}"
 	
+	// MixinExtras
+	include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:${project.mixinextras_version}")))
+	
 	// ModMenu
     modRuntimeOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
 	
 	// RoughlyEnoughItems
-	modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+
+	// Architectury Fabric
+	modRuntimeOnly "dev.architectury:architectury-fabric:${project.arch_version}"
 }
 
 java {
@@ -73,6 +104,26 @@ jar {
                 "MixinConfigs"            : "${mod_name}.mixins.json"
         ])
     }
+}
+
+modrinth {
+	projectId = project.modrinth_project
+	uploadFile = remapJar
+	versionName = "${project.mod_version} for Minecraft ${project.minecraft_version}"
+	gameVersions = ["${project.minecraft_version}"]
+	dependencies {
+		required.project "fabric-api"
+	}
+}
+
+task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+    apiToken = findProperty('CF_TOKEN')
+
+    def mainFile = upload(project.cf_project, remapJar)
+	mainFile.displayName = "${project.mod_version} for Minecraft ${project.minecraft_version}"
+	mainFile.addModLoader("Fabric")
+	mainFile.addGameVersion("${project.minecraft_version}")
+	mainFile.addRequirement("fabric-api")
 }
 
 publishing {

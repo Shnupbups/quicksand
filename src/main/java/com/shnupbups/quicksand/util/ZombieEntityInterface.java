@@ -1,15 +1,15 @@
 package com.shnupbups.quicksand.util;
 
 public interface ZombieEntityInterface {
-	boolean isConvertingInQuicksand();
+	boolean quicksand_isConvertingInQuicksand();
 
-	boolean canConvertInQuicksand();
+	boolean quicksand_canConvertInQuicksand();
 
-	void setTicksUntilQuicksandConversion(int ticksUntilQuicksandConversion);
+	void quicksand_setTicksUntilQuicksandConversion(int ticksUntilQuicksandConversion);
 
-	void convertInQuicksand();
+	void quicksand_convertInQuicksand();
 
-	boolean isSubmergedInQuicksand();
+	boolean quicksand_isSubmergedInQuicksand();
 
-	void updateSubmergedInQuicksand();
+	void quicksand_updateSubmergedInQuicksand();
 }

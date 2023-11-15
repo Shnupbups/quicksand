@@ -3,6 +3,8 @@ package com.shnupbups.quicksand.block;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.shnupbups.quicksand.mixin.LivingEntityAccessor;
+import com.shnupbups.quicksand.registry.QuicksandDamage;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -16,6 +18,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.pathing.NavigationType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -38,8 +41,7 @@ import net.minecraft.world.WorldEvents;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-import com.shnupbups.quicksand.Quicksand;
-import com.shnupbups.quicksand.registry.ModTags;
+import com.shnupbups.quicksand.registry.QuicksandTags;
 
 public class QuicksandBlock extends SandBlock implements FluidDrainable {
 	private static final VoxelShape FALLING_SHAPE = VoxelShapes.cuboid(0.0, 0.0, 0.0, 1.0, 0.9f, 1.0);
@@ -64,17 +66,29 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 
 	@Override
 	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-		if (entity.getBlockStateAtPos().isIn(ModTags.QUICKSAND)) {
-			entity.slowMovement(state, new Vec3d(0.6D, 0.4D, 0.6D));
-		}
-
-		if (!entity.isSpectator() && (hasEntityMoved(entity) || world.getRandom().nextFloat() < 0.2)) {
-			if (!entity.getType().isIn(ModTags.SURVIVES_IN_QUICKSAND) && entity instanceof LivingEntity living && world.getBlockState(new BlockPos(entity.getBlockX(), entity.getEyeY() - 0.11, entity.getBlockZ())).isIn(ModTags.QUICKSAND)) {
-				living.damage(Quicksand.QUICKSAND_DAMAGE, 1f);
+		if (!entity.isSpectator() && entity.getBlockStateAtPos().isIn(QuicksandTags.QUICKSAND) && !canWalkOnQuicksand(entity)) {
+			Vec3d velocity = entity.getVelocity();
+			double y = velocity.getY();
+			if(y < 0) {
+				y *= 0.3;
+			}
+			entity.setVelocity(new Vec3d(0, y, 0));
+			if(!(entity instanceof LivingEntityAccessor livingEntityAccessor && livingEntityAccessor.isJumping())) {
+				entity.slowMovement(state, new Vec3d(0.3D, 1D, 0.3D));
 			}
 
-			if(world.getRandom().nextBoolean()) spawnParticles(world, state, new Vec3d(entity.getX(), pos.getY(), entity.getZ()));
+			if (hasEntityMoved(entity) || world.getRandom().nextFloat() < 0.2) {
+				if (entity instanceof LivingEntity living && shouldDamage(world, living)) {
+					living.damage(QuicksandDamage.quicksand(living.getDamageSources()), 1f);
+				}
+
+				if(world.getRandom().nextBoolean()) spawnParticles(world, state, new Vec3d(entity.getX(), pos.getY(), entity.getZ()));
+			}
 		}
+	}
+
+	public boolean shouldDamage(World world, LivingEntity entity) {
+		return !entity.getType().isIn(QuicksandTags.SURVIVES_IN_QUICKSAND) && world.getBlockState(new BlockPos(entity.getBlockX(), (int) (entity.getEyeY() - 0.11), entity.getBlockZ())).isIn(QuicksandTags.QUICKSAND);
 	}
 
 	public boolean hasEntityMoved(Entity entity) {
@@ -114,7 +128,7 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 	}
 
 	public static boolean canWalkOnQuicksand(Entity entity) {
-		if (entity.getType().isIn(ModTags.QUICKSAND_WALKABLE_MOBS)) {
+		if (entity.getType().isIn(QuicksandTags.QUICKSAND_WALKABLE_MOBS)) {
 			return true;
 		} else {
 			return entity instanceof LivingEntity livingEntity && livingEntity.getEquippedStack(EquipmentSlot.FEET).isOf(Items.LEATHER_BOOTS);
@@ -126,7 +140,7 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 	}
 
 	@Override
-	public ItemStack tryDrainFluid(WorldAccess world, BlockPos pos, BlockState state) {
+	public ItemStack tryDrainFluid(PlayerEntity player, WorldAccess world, BlockPos pos, BlockState state) {
 		world.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.REDRAW_ON_MAIN_THREAD | Block.NOTIFY_ALL);
 		if (!world.isClient()) {
 			world.syncWorldEvent(WorldEvents.BLOCK_BROKEN, pos, Block.getRawIdFromState(state));
