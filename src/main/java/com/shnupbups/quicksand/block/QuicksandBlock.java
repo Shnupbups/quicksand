@@ -140,7 +140,7 @@ public class QuicksandBlock extends SandBlock implements FluidDrainable {
 	}
 
 	@Override
-	public ItemStack tryDrainFluid(PlayerEntity player, WorldAccess world, BlockPos pos, BlockState state) {
+	public ItemStack tryDrainFluid(WorldAccess world, BlockPos pos, BlockState state) {
 		world.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.REDRAW_ON_MAIN_THREAD | Block.NOTIFY_ALL);
 		if (!world.isClient()) {
 			world.syncWorldEvent(WorldEvents.BLOCK_BROKEN, pos, Block.getRawIdFromState(state));
